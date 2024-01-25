@@ -1,0 +1,40 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "hashnode-search-and-publish",
+  "title": "Hashnode Search and Publish",
+  "description": "This hashnode raycast extension is a personal hashnode feed and publishing blogs right from raycast ",
+  "icon": "command-icon.png",
+  "author": "agrit",
+  "owner": "ctrl_plus_C_ctrl_plus_V",
+  "categories": [
+    "Developer Tools"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "index",
+      "title": "Search blogs",
+      "subtitle": "Search blogs from Subscribed Publications",
+      "description": "This is a improved Raycast extension for Hashnode, a blogging platform experience from your dock",
+      "mode": "view"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.66.0"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.6",
+    "@types/node": "20.8.10",
+    "@types/react": "18.2.27",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
