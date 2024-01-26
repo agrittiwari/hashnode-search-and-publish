@@ -16,7 +16,19 @@
       "title": "Search blogs",
       "subtitle": "Search blogs from Subscribed Publications",
       "description": "Raycast extension for Hashnode, a blogging platform on your dock",
-      "mode": "view"
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "publications",
+          "placeholder": "Search by publications",
+          "type": "dropdown"
+        },
+        {
+          "name": "following",
+          "placeholder": "Search from accounts you follow",
+          "type": "text"
+        }
+      ]
     },
     {
       "name": "continue",

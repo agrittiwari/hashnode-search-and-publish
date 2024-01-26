@@ -4423,6 +4423,19 @@ export type GetPersonalFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', totalDocuments: number, nodes: Array<{ __typename?: 'User', name: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string } }> } }> } } };
 
+export type GetFollowedTagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFollowedTagsQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', tagsFollowing: Array<{ __typename?: 'Tag', id: string, slug: string }> } };
+
+export type SearchTagBasedBlogsQueryVariables = Exact<{
+  tag: Scalars['String']['input'];
+  sortBy?: InputMaybe<TagPostsSort>;
+}>;
+
+
+export type SearchTagBasedBlogsQuery = { __typename?: 'Query', tag?: { __typename?: 'Tag', id: string, name: string, slug: string, postsCount: number, posts: { __typename?: 'FeedPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', id: string, title: string, subtitle?: string } }> } } };
+
 
 export const GetPersonalFeedDocument = gql`
     query GetPersonalFeed {
@@ -4471,3 +4484,88 @@ export function useGetPersonalFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPersonalFeedQueryHookResult = ReturnType<typeof useGetPersonalFeedQuery>;
 export type GetPersonalFeedLazyQueryHookResult = ReturnType<typeof useGetPersonalFeedLazyQuery>;
 export type GetPersonalFeedQueryResult = Apollo.QueryResult<GetPersonalFeedQuery, GetPersonalFeedQueryVariables>;
+export const GetFollowedTagsDocument = gql`
+    query GetFollowedTags {
+  me {
+    tagsFollowing {
+      id
+      slug
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFollowedTagsQuery__
+ *
+ * To run a query within a React component, call `useGetFollowedTagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFollowedTagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFollowedTagsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFollowedTagsQuery(baseOptions?: Apollo.QueryHookOptions<GetFollowedTagsQuery, GetFollowedTagsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFollowedTagsQuery, GetFollowedTagsQueryVariables>(GetFollowedTagsDocument, options);
+      }
+export function useGetFollowedTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFollowedTagsQuery, GetFollowedTagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFollowedTagsQuery, GetFollowedTagsQueryVariables>(GetFollowedTagsDocument, options);
+        }
+export type GetFollowedTagsQueryHookResult = ReturnType<typeof useGetFollowedTagsQuery>;
+export type GetFollowedTagsLazyQueryHookResult = ReturnType<typeof useGetFollowedTagsLazyQuery>;
+export type GetFollowedTagsQueryResult = Apollo.QueryResult<GetFollowedTagsQuery, GetFollowedTagsQueryVariables>;
+export const SearchTagBasedBlogsDocument = gql`
+    query SearchTagBasedBlogs($tag: String!, $sortBy: TagPostsSort) {
+  tag(slug: $tag) {
+    id
+    name
+    slug
+    postsCount
+    posts(first: 50, filter: {sortBy: $sortBy}) {
+      edges {
+        node {
+          id
+          title
+          subtitle
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchTagBasedBlogsQuery__
+ *
+ * To run a query within a React component, call `useSearchTagBasedBlogsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchTagBasedBlogsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchTagBasedBlogsQuery({
+ *   variables: {
+ *      tag: // value for 'tag'
+ *      sortBy: // value for 'sortBy'
+ *   },
+ * });
+ */
+export function useSearchTagBasedBlogsQuery(baseOptions: Apollo.QueryHookOptions<SearchTagBasedBlogsQuery, SearchTagBasedBlogsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchTagBasedBlogsQuery, SearchTagBasedBlogsQueryVariables>(SearchTagBasedBlogsDocument, options);
+      }
+export function useSearchTagBasedBlogsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchTagBasedBlogsQuery, SearchTagBasedBlogsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchTagBasedBlogsQuery, SearchTagBasedBlogsQueryVariables>(SearchTagBasedBlogsDocument, options);
+        }
+export type SearchTagBasedBlogsQueryHookResult = ReturnType<typeof useSearchTagBasedBlogsQuery>;
+export type SearchTagBasedBlogsLazyQueryHookResult = ReturnType<typeof useSearchTagBasedBlogsLazyQuery>;
+export type SearchTagBasedBlogsQueryResult = Apollo.QueryResult<SearchTagBasedBlogsQuery, SearchTagBasedBlogsQueryVariables>;

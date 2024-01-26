@@ -1,4 +1,4 @@
-import { List } from "@raycast/api";
+import { Detail, List } from "@raycast/api";
 import React from "react";
 import { useGetPersonalFeedQuery } from "../generated/hooks_and_more";
 import { apolloGqlClient } from "../grapqhqlClient";
@@ -11,7 +11,12 @@ const FollowedAccountLists = () => {
     },
   });
   const myPersonalAccounts = myFollowedAccounts?.me?.follows?.nodes;
-  return <List>{myPersonalAccounts?.map((a) => <List.Item title={a?.name} />)}</List>;
+  return (
+    <>
+      <Detail markdown="# Accounts you Follow" />
+      <List>{myPersonalAccounts?.map((a) => <List.Item title={a?.name} />)}</List>
+    </>
+  );
 };
 
 export default FollowedAccountLists;
