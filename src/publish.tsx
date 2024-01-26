@@ -9,7 +9,7 @@ type Values = {
   tokeneditor: string[];
 };
 
-export default function Command() {
+export default function Publish() {
   function handleSubmit(values: Values) {
     console.log(values);
     showToast({ title: "Submitted form", message: "See logs for submitted values" });

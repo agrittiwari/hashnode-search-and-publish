@@ -1,0 +1,18 @@
+query GetPersonalFeed {
+  me {
+    follows(page: 1, pageSize: 10) {
+      totalDocuments
+      nodes {
+        name
+        publications(first: 10) {
+          edges {
+            node {
+              id
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+}
