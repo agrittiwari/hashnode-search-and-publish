@@ -9,6 +9,10 @@ query GetPersonalFeed {
               id
               title
               canonicalURL
+              favicon
+              followersCount
+              headerColor
+              displayTitle
               posts(first: 20) {
                 edges {
                   node {
@@ -36,7 +40,14 @@ query GetAllPostsOfaPublication($publicationId: ObjectId!) {
           title
           slug
           subtitle
-          canonicalUrl
+          url
+          ogMetaData {
+            image
+          }
+          brief
+          tags {
+            name
+          }
         }
       }
     }

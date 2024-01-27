@@ -52,9 +52,9 @@
       "mode": "view"
     },
     {
-      "name": "config",
-      "title": "Configure hashnode token and username",
-      "subtitle": "Modify the hashnode username and personal tokens",
+      "name": "profile",
+      "title": "See your hashnode blogs at ease",
+      "subtitle": "Share your hashnode blogs",
       "description": "Raycast open Command preferences",
       "mode": "view"
     }

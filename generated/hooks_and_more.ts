@@ -4421,14 +4421,14 @@ export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;
 export type GetPersonalFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', id: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string, canonicalURL: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } }> } }> } } };
+export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', id: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string, canonicalURL: string, favicon?: string, followersCount?: number, headerColor?: string, displayTitle?: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } }> } }> } } };
 
 export type GetAllPostsOfaPublicationQueryVariables = Exact<{
   publicationId: Scalars['ObjectId']['input'];
 }>;
 
 
-export type GetAllPostsOfaPublicationQuery = { __typename?: 'Query', publication?: { __typename?: 'Publication', title: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } };
+export type GetAllPostsOfaPublicationQuery = { __typename?: 'Query', publication?: { __typename?: 'Publication', title: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, url: string, brief: string, ogMetaData?: { __typename?: 'OpenGraphMetaData', image?: string }, tags?: Array<{ __typename?: 'Tag', name: string }> } }> } } };
 
 export type GetFollowedTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4456,6 +4456,10 @@ export const GetPersonalFeedDocument = gql`
               id
               title
               canonicalURL
+              favicon
+              followersCount
+              headerColor
+              displayTitle
               posts(first: 20) {
                 edges {
                   node {
@@ -4511,7 +4515,14 @@ export const GetAllPostsOfaPublicationDocument = gql`
           title
           slug
           subtitle
-          canonicalUrl
+          url
+          ogMetaData {
+            image
+          }
+          brief
+          tags {
+            name
+          }
         }
       }
     }

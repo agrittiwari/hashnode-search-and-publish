@@ -1,0 +1,18 @@
+mutation publish() {
+  publishPost(
+    input: {
+      title: "API testing"
+      contentMarkdown: "Here testing publish post"
+      tags: [{ name: "Testing", slug: "testing" }]
+      publicationId: "5fe46f939c4d6f15da0543fd"
+    }
+  ) {
+    post {
+      id
+      slug
+      url
+      title
+      subtitle
+    }
+  }
+}
