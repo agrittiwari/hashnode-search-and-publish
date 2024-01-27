@@ -31,6 +31,13 @@
       ]
     },
     {
+      "name": "drop",
+      "title": "drop",
+      "subtitle": "Continue Writing Blog you were writing",
+      "description": "Draft mode for Raycast hashnode extension",
+      "mode": "view"
+    },
+    {
       "name": "continue",
       "title": "Continue Writing",
       "subtitle": "Continue Writing Blog you were writing",

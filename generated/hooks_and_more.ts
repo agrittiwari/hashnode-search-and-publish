@@ -4421,7 +4421,14 @@ export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;
 export type GetPersonalFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', totalDocuments: number, nodes: Array<{ __typename?: 'User', name: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string } }> } }> } } };
+export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', id: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string, canonicalURL: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } }> } }> } } };
+
+export type GetAllPostsOfaPublicationQueryVariables = Exact<{
+  publicationId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type GetAllPostsOfaPublicationQuery = { __typename?: 'Query', publication?: { __typename?: 'Publication', title: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } };
 
 export type GetFollowedTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4441,14 +4448,24 @@ export const GetPersonalFeedDocument = gql`
     query GetPersonalFeed {
   me {
     follows(page: 1, pageSize: 10) {
-      totalDocuments
       nodes {
-        name
+        id
         publications(first: 10) {
           edges {
             node {
               id
               title
+              canonicalURL
+              posts(first: 20) {
+                edges {
+                  node {
+                    title
+                    slug
+                    subtitle
+                    canonicalUrl
+                  }
+                }
+              }
             }
           }
         }
@@ -4484,6 +4501,51 @@ export function useGetPersonalFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPersonalFeedQueryHookResult = ReturnType<typeof useGetPersonalFeedQuery>;
 export type GetPersonalFeedLazyQueryHookResult = ReturnType<typeof useGetPersonalFeedLazyQuery>;
 export type GetPersonalFeedQueryResult = Apollo.QueryResult<GetPersonalFeedQuery, GetPersonalFeedQueryVariables>;
+export const GetAllPostsOfaPublicationDocument = gql`
+    query GetAllPostsOfaPublication($publicationId: ObjectId!) {
+  publication(id: $publicationId) {
+    title
+    posts(first: 10) {
+      edges {
+        node {
+          title
+          slug
+          subtitle
+          canonicalUrl
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllPostsOfaPublicationQuery__
+ *
+ * To run a query within a React component, call `useGetAllPostsOfaPublicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPostsOfaPublicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPostsOfaPublicationQuery({
+ *   variables: {
+ *      publicationId: // value for 'publicationId'
+ *   },
+ * });
+ */
+export function useGetAllPostsOfaPublicationQuery(baseOptions: Apollo.QueryHookOptions<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>(GetAllPostsOfaPublicationDocument, options);
+      }
+export function useGetAllPostsOfaPublicationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>(GetAllPostsOfaPublicationDocument, options);
+        }
+export type GetAllPostsOfaPublicationQueryHookResult = ReturnType<typeof useGetAllPostsOfaPublicationQuery>;
+export type GetAllPostsOfaPublicationLazyQueryHookResult = ReturnType<typeof useGetAllPostsOfaPublicationLazyQuery>;
+export type GetAllPostsOfaPublicationQueryResult = Apollo.QueryResult<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>;
 export const GetFollowedTagsDocument = gql`
     query GetFollowedTags {
   me {

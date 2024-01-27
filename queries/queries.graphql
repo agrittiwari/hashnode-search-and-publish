@@ -1,16 +1,42 @@
 query GetPersonalFeed {
   me {
     follows(page: 1, pageSize: 10) {
-      totalDocuments
       nodes {
-        name
+        id
         publications(first: 10) {
           edges {
             node {
               id
               title
+              canonicalURL
+              posts(first: 20) {
+                edges {
+                  node {
+                    title
+                    slug
+                    subtitle
+                    canonicalUrl
+                  }
+                }
+              }
             }
           }
+        }
+      }
+    }
+  }
+}
+
+query GetAllPostsOfaPublication($publicationId: ObjectId!) {
+  publication(id: $publicationId) {
+    title
+    posts(first: 10) {
+      edges {
+        node {
+          title
+          slug
+          subtitle
+          canonicalUrl
         }
       }
     }

@@ -4,6 +4,5 @@ import FollowedAccountLists from "../components/FollowedAccountLists";
 export default function Search(props: LaunchProps) {
   const { launchType } = props;
   console.log(`Searching ${launchType}`);
-  return <Detail markdown="# Hello" />;
   return <FollowedAccountLists />;
 }
