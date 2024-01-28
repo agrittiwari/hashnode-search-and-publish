@@ -1,4 +1,4 @@
-const tags = [
+export const allTags = [
   {
     name: "JavaScript",
     logo: "https://cdn.hashnode.com/res/hashnode/image/upload/v1513320898547/BJjpblWfG.png",

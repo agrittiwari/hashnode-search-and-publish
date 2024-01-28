@@ -31,6 +31,18 @@ query GetPersonalFeed {
   }
 }
 
+query GetMyPublication {
+  me {
+    publications(first: 10) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}
+
 query GetAllPostsOfaPublication($publicationId: ObjectId!) {
   publication(id: $publicationId) {
     title

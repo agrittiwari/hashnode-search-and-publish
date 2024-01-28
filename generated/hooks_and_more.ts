@@ -4418,10 +4418,25 @@ export type StrictTypedTypePolicies = {
 	}
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;
+export type PublishBlogMutationVariables = Exact<{
+  title: Scalars['String']['input'];
+  contentMarkdown: Scalars['String']['input'];
+  tags: Array<PublishPostTagInput> | PublishPostTagInput;
+  publicationId: Scalars['ObjectId']['input'];
+}>;
+
+
+export type PublishBlogMutation = { __typename?: 'Mutation', publishPost: { __typename?: 'PublishPostPayload', post?: { __typename?: 'Post', id: string, slug: string, url: string, title: string, subtitle?: string } } };
+
 export type GetPersonalFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', follows: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', id: string, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, title: string, canonicalURL: string, favicon?: string, followersCount?: number, headerColor?: string, displayTitle?: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, canonicalUrl?: string } }> } } }> } }> } } };
+
+export type GetMyPublicationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMyPublicationQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string } }> } } };
 
 export type GetAllPostsOfaPublicationQueryVariables = Exact<{
   publicationId: Scalars['ObjectId']['input'];
@@ -4444,6 +4459,50 @@ export type SearchTagBasedBlogsQueryVariables = Exact<{
 export type SearchTagBasedBlogsQuery = { __typename?: 'Query', tag?: { __typename?: 'Tag', id: string, name: string, slug: string, postsCount: number, posts: { __typename?: 'FeedPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', id: string, title: string, subtitle?: string } }> } } };
 
 
+export const PublishBlogDocument = gql`
+    mutation publishBlog($title: String!, $contentMarkdown: String!, $tags: [PublishPostTagInput!]!, $publicationId: ObjectId!) {
+  publishPost(
+    input: {title: $title, contentMarkdown: $contentMarkdown, tags: $tags, publicationId: $publicationId}
+  ) {
+    post {
+      id
+      slug
+      url
+      title
+      subtitle
+    }
+  }
+}
+    `;
+export type PublishBlogMutationFn = Apollo.MutationFunction<PublishBlogMutation, PublishBlogMutationVariables>;
+
+/**
+ * __usePublishBlogMutation__
+ *
+ * To run a mutation, you first call `usePublishBlogMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublishBlogMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publishBlogMutation, { data, loading, error }] = usePublishBlogMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      contentMarkdown: // value for 'contentMarkdown'
+ *      tags: // value for 'tags'
+ *      publicationId: // value for 'publicationId'
+ *   },
+ * });
+ */
+export function usePublishBlogMutation(baseOptions?: Apollo.MutationHookOptions<PublishBlogMutation, PublishBlogMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublishBlogMutation, PublishBlogMutationVariables>(PublishBlogDocument, options);
+      }
+export type PublishBlogMutationHookResult = ReturnType<typeof usePublishBlogMutation>;
+export type PublishBlogMutationResult = Apollo.MutationResult<PublishBlogMutation>;
+export type PublishBlogMutationOptions = Apollo.BaseMutationOptions<PublishBlogMutation, PublishBlogMutationVariables>;
 export const GetPersonalFeedDocument = gql`
     query GetPersonalFeed {
   me {
@@ -4505,6 +4564,46 @@ export function useGetPersonalFeedLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetPersonalFeedQueryHookResult = ReturnType<typeof useGetPersonalFeedQuery>;
 export type GetPersonalFeedLazyQueryHookResult = ReturnType<typeof useGetPersonalFeedLazyQuery>;
 export type GetPersonalFeedQueryResult = Apollo.QueryResult<GetPersonalFeedQuery, GetPersonalFeedQueryVariables>;
+export const GetMyPublicationDocument = gql`
+    query GetMyPublication {
+  me {
+    publications(first: 10) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMyPublicationQuery__
+ *
+ * To run a query within a React component, call `useGetMyPublicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyPublicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyPublicationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMyPublicationQuery(baseOptions?: Apollo.QueryHookOptions<GetMyPublicationQuery, GetMyPublicationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyPublicationQuery, GetMyPublicationQueryVariables>(GetMyPublicationDocument, options);
+      }
+export function useGetMyPublicationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyPublicationQuery, GetMyPublicationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyPublicationQuery, GetMyPublicationQueryVariables>(GetMyPublicationDocument, options);
+        }
+export type GetMyPublicationQueryHookResult = ReturnType<typeof useGetMyPublicationQuery>;
+export type GetMyPublicationLazyQueryHookResult = ReturnType<typeof useGetMyPublicationLazyQuery>;
+export type GetMyPublicationQueryResult = Apollo.QueryResult<GetMyPublicationQuery, GetMyPublicationQueryVariables>;
 export const GetAllPostsOfaPublicationDocument = gql`
     query GetAllPostsOfaPublication($publicationId: ObjectId!) {
   publication(id: $publicationId) {

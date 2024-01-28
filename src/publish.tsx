@@ -1,4 +1,12 @@
-import { Form, ActionPanel, Action, showToast } from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, LaunchProps } from "@raycast/api";
+import {
+  PublishPostInput,
+  PublishPostTagInput,
+  useGetMyPublicationQuery,
+  usePublishBlogMutation,
+} from "../generated/hooks_and_more";
+import { apolloGqlClient } from "../grapqhqlClient";
+import { useState } from "react";
 
 type Values = {
   textfield: string;
@@ -9,31 +17,113 @@ type Values = {
   tokeneditor: string[];
 };
 
-export default function Publish() {
-  function handleSubmit(values: Values) {
-    console.log(values);
-    showToast({ title: "Submitted form", message: "See logs for submitted values" });
-  }
+export default function Publish(
+  props: LaunchProps<{
+    draftValues: Pick<PublishPostInput, "contentMarkdown" | "title" | "publicationId"> & { tags: string[] };
+  }>,
+) {
+  const { draftValues } = props;
+  const { data: myData, loading } = useGetMyPublicationQuery({
+    client: apolloGqlClient,
+  });
 
+  const someTags = [
+    {
+      name: "Go Language",
+      logo: "https://cdn.hashnode.com/res/hashnode/image/upload/v1534512687168/S1D40rVLm.png",
+      slug: "go",
+      objectID: "56744721958ef13879b94bd0",
+    },
+    {
+      name: "Frontend Development",
+      slug: "frontend-development",
+      objectID: "56a399f292921b8f79d3633c",
+    },
+    {
+      name: "GitHub",
+      logo: "https://cdn.hashnode.com/res/hashnode/image/upload/v1513321555902/BkhLElZMG.png",
+      slug: "github",
+      objectID: "56744721958ef13879b94c63",
+    },
+    {
+      name: "Hashnode",
+      logo: "https://cdn.hashnode.com/res/hashnode/image/upload/v1619605440273/S3_X4Rf7V.jpeg",
+      slug: "hashnode",
+      objectID: "567ae5a72b926c3063c3061a",
+    },
+    {
+      name: "Python 3",
+      slug: "python3",
+      logo: "https://res.cloudinary.com/hashnode/image/upload/v1503468096/axvqxfbcm0b7ourhshj7.jpg",
+      objectID: "56744723958ef13879b95342",
+    },
+    {
+      name: "Codenewbies",
+      slug: "codenewbies",
+      objectID: "5f22b52283e4e9440619af83",
+    },
+    {
+      name: "webdev",
+      slug: "webdev",
+      objectID: "56744723958ef13879b952af",
+    },
+    {
+      name: "Machine Learning",
+      logo: "https://cdn.hashnode.com/res/hashnode/image/upload/v1513321644252/Sk43El-fz.png",
+      slug: "machine-learning",
+      objectID: "56744722958ef13879b950a8",
+    },
+
+    {
+      name: "interview",
+      slug: "interview",
+      objectID: "56744720958ef13879b947e1",
+    },
+    {
+      name: "data",
+      slug: "data",
+      objectID: "56744721958ef13879b949d3",
+    },
+  ];
+
+  const [title, setTitle] = useState(draftValues?.title || "title");
+  const [tags, setTags] = useState<string[]>(draftValues?.tags);
+  const [contentMarkdown, setContentMarkdown] = useState(draftValues?.contentMarkdown);
+  const [publish, { data, error }] = usePublishBlogMutation({
+    client: apolloGqlClient,
+  });
+
+  function handleSubmit(values: Values) {
+    publish({
+      variables: {
+        title: title?.toString(),
+        contentMarkdown: contentMarkdown,
+        tags: tags,
+        publicationId: draftValues?.publicationId || myData?.me?.publications?.edges?.[0]?.node?.id,
+      },
+      client: apolloGqlClient,
+      onCompleted(data, clientOptions) {
+        showToast({ title: "Blog Published", message: `Live on : ${data?.publishPost?.post?.url}` });
+      },
+    });
+  }
   return (
     <Form
+      isLoading={loading}
       actions={
         <ActionPanel>
           <Action.SubmitForm onSubmit={handleSubmit} />
         </ActionPanel>
       }
+      enableDrafts
     >
-      <Form.Description text="This form showcases all available form elements." />
-      <Form.TextField id="textfield" title="Text field" placeholder="Enter text" defaultValue="Raycast" />
-      <Form.TextArea id="textarea" title="Text area" placeholder="Enter multi-line text" />
+      <Form.Description text="Write your technical blog" />
+      <Form.TextField id="textfield" title="Text field" placeholder="Blog Title" value={title} onChange={setTitle} />
+      <Form.TextArea id="textarea" title="Text area" placeholder="Content (Markdown enabled) " enableMarkdown />
       <Form.Separator />
-      <Form.DatePicker id="datepicker" title="Date picker" />
-      <Form.Checkbox id="checkbox" title="Checkbox" label="Checkbox Label" storeValue />
-      <Form.Dropdown id="dropdown" title="Dropdown">
-        <Form.Dropdown.Item value="dropdown-item" title="Dropdown Item" />
-      </Form.Dropdown>
-      <Form.TagPicker id="tokeneditor" title="Tag picker">
-        <Form.TagPicker.Item value="tagpicker-item" title="Tag Picker Item" />
+
+      <Form.TagPicker id="tokeneditor" title="Tag picker" value={tags} onChange={setTags}>
+        {someTags?.map((t) => <Form.TagPicker.Item key={t?.objectID} value={t?.slug} title={t?.name} />)}
       </Form.TagPicker>
     </Form>
   );

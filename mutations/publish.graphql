@@ -1,12 +1,10 @@
-mutation publish() {
-  publishPost(
-    input: {
-      title: "API testing"
-      contentMarkdown: "Here testing publish post"
-      tags: [{ name: "Testing", slug: "testing" }]
-      publicationId: "5fe46f939c4d6f15da0543fd"
-    }
-  ) {
+mutation publishBlog(
+  $title: String!
+  $contentMarkdown: String!
+  $tags: [PublishPostTagInput!]!
+  $publicationId: ObjectId!
+) {
+  publishPost(input: { title: $title, contentMarkdown: $contentMarkdown, tags: $tags, publicationId: $publicationId }) {
     post {
       id
       slug

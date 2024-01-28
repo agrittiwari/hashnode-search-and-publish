@@ -16,7 +16,7 @@ const FollowedAccountLists = () => {
   } = useGetPersonalFeedQuery({
     client: apolloGqlClient,
     onCompleted(data) {
-      console.log("feedData", data?.me?.follows);
+      console.log("feedData", data?.me);
     },
   });
   const myPersonalAccounts = myFollowedAccounts?.me?.follows?.nodes?.flatMap((a) => a?.publications?.edges);
