@@ -371,8 +371,12 @@ export type Draft = Node & {
   slug: Scalars['String']['output'];
   /** The subtitle of the draft. It would become the subtitle of the post when published. */
   subtitle?: Maybe<Scalars['String']['output']>;
-  /** Returns list of tags added to the draft. Contains tag id, name, slug, etc. */
+  /**
+   * Returns list of tags added to the draft. Contains tag id, name, slug, etc.
+   * @deprecated Use tagsV2 instead. Will be removed on 26/02/2024.
+   */
   tags: Array<Tag>;
+  tagsV2: Array<DraftTag>;
   /** The title of the draft. It would become the title of the post when published. */
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
@@ -384,6 +388,18 @@ export type DraftBackup = {
   at?: Maybe<Scalars['DateTime']['output']>;
   /** The status of the backup i.e., success or failure. */
   status?: Maybe<BackupStatus>;
+};
+
+/**
+ * Contains basic information about a Tag within a Draft.
+ * A tag in a draft is a tag that is not published yet.
+ */
+export type DraftBaseTag = {
+  __typename?: 'DraftBaseTag';
+  /** The name of the tag. Shown in tag page. */
+  name: Scalars['String']['output'];
+  /** The slug of the tag. Used to access tags feed.  Example https://hashnode.com/n/graphql */
+  slug: Scalars['String']['output'];
 };
 
 /**
@@ -436,6 +452,8 @@ export type DraftSettings = {
   /** A flag to indicate if the cover image is shown below title of the post. Default position of cover is top of title. */
   stickCoverToBottom: Scalars['Boolean']['output'];
 };
+
+export type DraftTag = DraftBaseTag | Tag;
 
 /**
  * An edge that contains a node and cursor to the node.
@@ -2148,6 +2166,7 @@ export enum Scope {
   CreatePro = 'create_pro',
   ImportSubscribersToPublication = 'import_subscribers_to_publication',
   PublicationAdmin = 'publication_admin',
+  PublicationMember = 'publication_member',
   PublishComment = 'publish_comment',
   PublishDraft = 'publish_draft',
   PublishPost = 'publish_post',
@@ -2161,6 +2180,7 @@ export enum Scope {
   UpdatePost = 'update_post',
   UpdateReply = 'update_reply',
   WebhookAdmin = 'webhook_admin',
+  WriteDraft = 'write_draft',
   WritePost = 'write_post',
   WriteSeries = 'write_series'
 }
@@ -3057,7 +3077,7 @@ export type DomainStatusFieldPolicy = {
 	host?: FieldPolicy<any> | FieldReadFunction<any>,
 	ready?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DraftKeySpecifier = ('author' | 'canonicalUrl' | 'coAuthors' | 'content' | 'coverImage' | 'dateUpdated' | 'features' | 'id' | 'lastBackup' | 'lastFailedBackupAt' | 'lastSuccessfulBackupAt' | 'ogMetaData' | 'readTimeInMinutes' | 'seo' | 'series' | 'settings' | 'slug' | 'subtitle' | 'tags' | 'title' | 'updatedAt' | DraftKeySpecifier)[];
+export type DraftKeySpecifier = ('author' | 'canonicalUrl' | 'coAuthors' | 'content' | 'coverImage' | 'dateUpdated' | 'features' | 'id' | 'lastBackup' | 'lastFailedBackupAt' | 'lastSuccessfulBackupAt' | 'ogMetaData' | 'readTimeInMinutes' | 'seo' | 'series' | 'settings' | 'slug' | 'subtitle' | 'tags' | 'tagsV2' | 'title' | 'updatedAt' | DraftKeySpecifier)[];
 export type DraftFieldPolicy = {
 	author?: FieldPolicy<any> | FieldReadFunction<any>,
 	canonicalUrl?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -3078,6 +3098,7 @@ export type DraftFieldPolicy = {
 	slug?: FieldPolicy<any> | FieldReadFunction<any>,
 	subtitle?: FieldPolicy<any> | FieldReadFunction<any>,
 	tags?: FieldPolicy<any> | FieldReadFunction<any>,
+	tagsV2?: FieldPolicy<any> | FieldReadFunction<any>,
 	title?: FieldPolicy<any> | FieldReadFunction<any>,
 	updatedAt?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -3085,6 +3106,11 @@ export type DraftBackupKeySpecifier = ('at' | 'status' | DraftBackupKeySpecifier
 export type DraftBackupFieldPolicy = {
 	at?: FieldPolicy<any> | FieldReadFunction<any>,
 	status?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type DraftBaseTagKeySpecifier = ('name' | 'slug' | DraftBaseTagKeySpecifier)[];
+export type DraftBaseTagFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	slug?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type DraftConnectionKeySpecifier = ('edges' | 'pageInfo' | 'totalDocuments' | DraftConnectionKeySpecifier)[];
 export type DraftConnectionFieldPolicy = {
@@ -3988,6 +4014,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | DraftBackupKeySpecifier | (() => undefined | DraftBackupKeySpecifier),
 		fields?: DraftBackupFieldPolicy,
 	},
+	DraftBaseTag?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | DraftBaseTagKeySpecifier | (() => undefined | DraftBaseTagKeySpecifier),
+		fields?: DraftBaseTagFieldPolicy,
+	},
 	DraftConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DraftConnectionKeySpecifier | (() => undefined | DraftConnectionKeySpecifier),
 		fields?: DraftConnectionFieldPolicy,
@@ -4436,7 +4466,7 @@ export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'M
 export type GetMyPublicationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyPublicationQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string } }> } } };
+export type GetMyPublicationQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, displayTitle?: string } }> } } };
 
 export type GetAllPostsOfaPublicationQueryVariables = Exact<{
   publicationId: Scalars['ObjectId']['input'];
@@ -4444,6 +4474,11 @@ export type GetAllPostsOfaPublicationQueryVariables = Exact<{
 
 
 export type GetAllPostsOfaPublicationQuery = { __typename?: 'Query', publication?: { __typename?: 'Publication', title: string, posts: { __typename?: 'PublicationPostConnection', edges: Array<{ __typename?: 'PostEdge', node: { __typename?: 'Post', title: string, slug: string, subtitle?: string, url: string, brief: string, ogMetaData?: { __typename?: 'OpenGraphMetaData', image?: string }, tags?: Array<{ __typename?: 'Tag', name: string }> } }> } } };
+
+export type GetProfileDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProfileDataQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', id: string, username: string, followersCount: number, bio?: { __typename?: 'Content', text: string }, posts: { __typename?: 'UserPostConnection', nodes: Array<{ __typename?: 'Post', title: string, publishedAt: any, url: string, coverImage?: { __typename?: 'PostCoverImage', url: string } }> } } };
 
 export type GetFollowedTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4571,6 +4606,7 @@ export const GetMyPublicationDocument = gql`
       edges {
         node {
           id
+          displayTitle
         }
       }
     }
@@ -4656,6 +4692,55 @@ export function useGetAllPostsOfaPublicationLazyQuery(baseOptions?: Apollo.LazyQ
 export type GetAllPostsOfaPublicationQueryHookResult = ReturnType<typeof useGetAllPostsOfaPublicationQuery>;
 export type GetAllPostsOfaPublicationLazyQueryHookResult = ReturnType<typeof useGetAllPostsOfaPublicationLazyQuery>;
 export type GetAllPostsOfaPublicationQueryResult = Apollo.QueryResult<GetAllPostsOfaPublicationQuery, GetAllPostsOfaPublicationQueryVariables>;
+export const GetProfileDataDocument = gql`
+    query GetProfileData {
+  me {
+    id
+    username
+    bio {
+      text
+    }
+    followersCount
+    posts(page: 1, pageSize: 10) {
+      nodes {
+        coverImage {
+          url
+        }
+        title
+        publishedAt
+        url
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProfileDataQuery__
+ *
+ * To run a query within a React component, call `useGetProfileDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProfileDataQuery(baseOptions?: Apollo.QueryHookOptions<GetProfileDataQuery, GetProfileDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProfileDataQuery, GetProfileDataQueryVariables>(GetProfileDataDocument, options);
+      }
+export function useGetProfileDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfileDataQuery, GetProfileDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProfileDataQuery, GetProfileDataQueryVariables>(GetProfileDataDocument, options);
+        }
+export type GetProfileDataQueryHookResult = ReturnType<typeof useGetProfileDataQuery>;
+export type GetProfileDataLazyQueryHookResult = ReturnType<typeof useGetProfileDataLazyQuery>;
+export type GetProfileDataQueryResult = Apollo.QueryResult<GetProfileDataQuery, GetProfileDataQueryVariables>;
 export const GetFollowedTagsDocument = gql`
     query GetFollowedTags {
   me {

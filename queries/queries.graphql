@@ -37,6 +37,7 @@ query GetMyPublication {
       edges {
         node {
           id
+          displayTitle
         }
       }
     }
@@ -61,6 +62,27 @@ query GetAllPostsOfaPublication($publicationId: ObjectId!) {
             name
           }
         }
+      }
+    }
+  }
+}
+
+query GetProfileData {
+  me {
+    id
+    username
+    bio {
+      text
+    }
+    followersCount
+    posts(page: 1, pageSize: 10) {
+      nodes {
+        coverImage {
+          url
+        }
+        title
+        publishedAt
+        url
       }
     }
   }

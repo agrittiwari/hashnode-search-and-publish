@@ -8,15 +8,6 @@ import {
 import { apolloGqlClient } from "../grapqhqlClient";
 import { useState } from "react";
 
-type Values = {
-  textfield: string;
-  textarea: string;
-  datepicker: Date;
-  checkbox: boolean;
-  dropdown: string;
-  tokeneditor: string[];
-};
-
 export default function Publish(
   props: LaunchProps<{
     draftValues: Pick<PublishPostInput, "contentMarkdown" | "title" | "publicationId"> & { tags: string[] };
@@ -93,12 +84,17 @@ export default function Publish(
     client: apolloGqlClient,
   });
 
-  function handleSubmit(values: Values) {
+  function handleSubmit() {
     publish({
       variables: {
         title: title?.toString(),
         contentMarkdown: contentMarkdown,
-        tags: tags,
+        tags: tags.map((t) => {
+          return {
+            name: t,
+            slug: t,
+          };
+        }),
         publicationId: draftValues?.publicationId || myData?.me?.publications?.edges?.[0]?.node?.id,
       },
       client: apolloGqlClient,
@@ -119,7 +115,14 @@ export default function Publish(
     >
       <Form.Description text="Write your technical blog" />
       <Form.TextField id="textfield" title="Text field" placeholder="Blog Title" value={title} onChange={setTitle} />
-      <Form.TextArea id="textarea" title="Text area" placeholder="Content (Markdown enabled) " enableMarkdown />
+      <Form.TextArea
+        id="textarea"
+        title="Text area"
+        placeholder="Content (Markdown enabled) "
+        value={contentMarkdown}
+        onChange={setContentMarkdown}
+        enableMarkdown
+      />
       <Form.Separator />
 
       <Form.TagPicker id="tokeneditor" title="Tag picker" value={tags} onChange={setTags}>
