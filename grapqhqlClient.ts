@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 const HASHNODE_API_URL = "https://gql.hashnode.com/graphql";
 const httpLink = new HttpLink({
   uri: HASHNODE_API_URL,
-  fetch: fetch,
+  fetch: fetch as any,
   headers: {
     Authorization: getPreferenceValues()?.token,
   },
