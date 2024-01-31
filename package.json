@@ -13,7 +13,7 @@
   "commands": [
     {
       "name": "search",
-      "title": "Search blogs",
+      "title": "Search Recent blogs",
       "subtitle": "Search blogs from Subscribed Publications",
       "description": "Raycast extension for Hashnode, a blogging platform on your dock",
       "mode": "view"
@@ -27,7 +27,7 @@
     },
     {
       "name": "profile",
-      "title": "Hashnode Profile",
+      "title": "Check your Hashnode Profile",
       "subtitle": "Share your hashnode blogs",
       "description": "Check your hashnode profile right from your dock",
       "mode": "view"

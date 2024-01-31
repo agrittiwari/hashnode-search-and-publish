@@ -121,24 +121,30 @@ export default function Publish(
         {myData?.me?.publications?.edges?.map((t) => (
           <Form.Dropdown.Item
             key={t.node?.id}
-            title={t.node?.displayTitle}
-            value={t.node?.id}
-            icon={{ source: t.node?.favicon, tintColor: getRandomColor() }}
+            title={!!t?.node?.displayTitle ? t?.node?.displayTitle : ""}
+            value={t?.node?.id}
+            icon={{
+              source: {
+                dark: !!t?.node?.favicon ? t?.node?.favicon : "",
+                light: !!t?.node?.favicon ? t?.node?.favicon : "",
+              },
+              tintColor: getRandomColor(),
+            }}
           />
         ))}
       </Form.Dropdown>
-      <Form.TextField id="textfield" title="Text field" placeholder="Blog Title" value={title} onChange={setTitle} />
+      <Form.TextField id="textfield" title="Title" placeholder="Blog Title" value={title} onChange={setTitle} />
       <Form.TextArea
         id="textarea"
         title="Text area"
-        placeholder="Content (Markdown enabled) "
+        placeholder="Content (Markdown enabled)"
         value={contentMarkdown}
         onChange={setContentMarkdown}
         enableMarkdown
       />
       <Form.Separator />
 
-      <Form.TagPicker id="tokeneditor" title="Tag picker" value={tags} onChange={setTags}>
+      <Form.TagPicker id="tokeneditor" title="Tag Picker" value={tags} onChange={setTags}>
         {someTags?.map((t) => <Form.TagPicker.Item key={t?.objectID} value={t?.slug} title={t?.name} />)}
       </Form.TagPicker>
     </Form>
