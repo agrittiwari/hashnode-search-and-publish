@@ -16,32 +16,6 @@
       "title": "Search blogs",
       "subtitle": "Search blogs from Subscribed Publications",
       "description": "Raycast extension for Hashnode, a blogging platform on your dock",
-      "mode": "view",
-      "arguments": [
-        {
-          "name": "publications",
-          "placeholder": "Search by publications",
-          "type": "dropdown"
-        },
-        {
-          "name": "following",
-          "placeholder": "Search from accounts you follow",
-          "type": "text"
-        }
-      ]
-    },
-    {
-      "name": "drop",
-      "title": "drop",
-      "subtitle": "Continue Writing Blog you were writing",
-      "description": "Draft mode for Raycast hashnode extension",
-      "mode": "view"
-    },
-    {
-      "name": "continue",
-      "title": "Continue Writing",
-      "subtitle": "Continue Writing Blog you were writing",
-      "description": "Draft mode for Raycast hashnode extension",
       "mode": "view"
     },
     {
@@ -53,9 +27,9 @@
     },
     {
       "name": "profile",
-      "title": "See your hashnode blogs at ease",
+      "title": "Hashnode Profile",
       "subtitle": "Share your hashnode blogs",
-      "description": "Raycast open Command preferences",
+      "description": "Check your hashnode profile right from your dock",
       "mode": "view"
     }
   ],

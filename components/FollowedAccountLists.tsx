@@ -36,6 +36,7 @@ const FollowedAccountLists = () => {
             <ActionPanel>
               <Action.Push title="Open" target={<BlogsList id={a?.node?.id} />} />
               <Action.OpenInBrowser url={a?.node?.canonicalURL} />
+              <Action.CopyToClipboard content={a?.node?.canonicalURL} title="Copy to Share" />
             </ActionPanel>
           }
         />

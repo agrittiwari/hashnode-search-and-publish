@@ -1,4 +1,4 @@
-import { Form, ActionPanel, Action, showToast, LaunchProps } from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, LaunchProps, popToRoot } from "@raycast/api";
 import {
   PublishPostInput,
   PublishPostTagInput,
@@ -7,6 +7,7 @@ import {
 } from "../generated/hooks_and_more";
 import { apolloGqlClient } from "../grapqhqlClient";
 import { useState } from "react";
+import { getRandomColor } from "./profile";
 
 export default function Publish(
   props: LaunchProps<{
@@ -77,9 +78,10 @@ export default function Publish(
     },
   ];
 
-  const [title, setTitle] = useState(draftValues?.title || "title");
-  const [tags, setTags] = useState<string[]>(draftValues?.tags);
-  const [contentMarkdown, setContentMarkdown] = useState(draftValues?.contentMarkdown);
+  const [title, setTitle] = useState(draftValues?.title || "");
+  const [tags, setTags] = useState<string[]>(draftValues?.tags || []);
+  const [contentMarkdown, setContentMarkdown] = useState(draftValues?.contentMarkdown || "");
+  const [publication, setSelectedPublication] = useState(draftValues?.publicationId || "");
   const [publish, { data, error }] = usePublishBlogMutation({
     client: apolloGqlClient,
   });
@@ -95,13 +97,14 @@ export default function Publish(
             slug: t,
           };
         }),
-        publicationId: draftValues?.publicationId || myData?.me?.publications?.edges?.[0]?.node?.id,
+        publicationId: publication || draftValues?.publicationId || myData?.me?.publications?.edges?.[0]?.node?.id,
       },
       client: apolloGqlClient,
       onCompleted(data, clientOptions) {
         showToast({ title: "Blog Published", message: `Live on : ${data?.publishPost?.post?.url}` });
       },
     });
+    popToRoot();
   }
   return (
     <Form
@@ -114,6 +117,16 @@ export default function Publish(
       enableDrafts
     >
       <Form.Description text="Write your technical blog" />
+      <Form.Dropdown id="dropdown" isLoading={loading} title="Select Publication">
+        {myData?.me?.publications?.edges?.map((t) => (
+          <Form.Dropdown.Item
+            key={t.node?.id}
+            title={t.node?.displayTitle}
+            value={t.node?.id}
+            icon={{ source: t.node?.favicon, tintColor: getRandomColor() }}
+          />
+        ))}
+      </Form.Dropdown>
       <Form.TextField id="textfield" title="Text field" placeholder="Blog Title" value={title} onChange={setTitle} />
       <Form.TextArea
         id="textarea"

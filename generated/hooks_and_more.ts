@@ -4466,7 +4466,7 @@ export type GetPersonalFeedQuery = { __typename?: 'Query', me: { __typename?: 'M
 export type GetMyPublicationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyPublicationQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, displayTitle?: string } }> } } };
+export type GetMyPublicationQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, displayTitle?: string, favicon?: string } }> } } };
 
 export type GetAllPostsOfaPublicationQueryVariables = Exact<{
   publicationId: Scalars['ObjectId']['input'];
@@ -4478,7 +4478,7 @@ export type GetAllPostsOfaPublicationQuery = { __typename?: 'Query', publication
 export type GetProfileDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileDataQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', id: string, username: string, followersCount: number, bio?: { __typename?: 'Content', text: string }, posts: { __typename?: 'UserPostConnection', nodes: Array<{ __typename?: 'Post', title: string, publishedAt: any, url: string, coverImage?: { __typename?: 'PostCoverImage', url: string } }> } } };
+export type GetProfileDataQuery = { __typename?: 'Query', me: { __typename?: 'MyUser', id: string, username: string, profilePicture?: string, followersCount: number, tagsFollowing: Array<{ __typename?: 'Tag', id: string, tagline?: string, logo?: string, info?: { __typename?: 'Content', text: string } }>, publications: { __typename?: 'UserPublicationsConnection', edges: Array<{ __typename?: 'UserPublicationsEdge', node: { __typename?: 'Publication', id: string, url: string, about?: { __typename?: 'Content', text: string }, drafts: { __typename?: 'DraftConnection', edges: Array<{ __typename?: 'DraftEdge', node: { __typename?: 'Draft', title?: string } }> } } }> }, bio?: { __typename?: 'Content', text: string }, posts: { __typename?: 'UserPostConnection', nodes: Array<{ __typename?: 'Post', id: string, title: string, subtitle?: string, slug: string, publishedAt: any, url: string, coverImage?: { __typename?: 'PostCoverImage', url: string }, series?: { __typename?: 'Series', name: string } }> } } };
 
 export type GetFollowedTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4607,6 +4607,7 @@ export const GetMyPublicationDocument = gql`
         node {
           id
           displayTitle
+          favicon
         }
       }
     }
@@ -4697,16 +4698,49 @@ export const GetProfileDataDocument = gql`
   me {
     id
     username
+    profilePicture
+    tagsFollowing {
+      id
+      tagline
+      info {
+        text
+      }
+      logo
+    }
+    publications(first: 10) {
+      edges {
+        node {
+          id
+          about {
+            text
+          }
+          url
+          drafts(first: 10) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      }
+    }
     bio {
       text
     }
     followersCount
     posts(page: 1, pageSize: 10) {
       nodes {
+        id
         coverImage {
           url
         }
         title
+        subtitle
+        slug
+        series {
+          name
+        }
         publishedAt
         url
       }

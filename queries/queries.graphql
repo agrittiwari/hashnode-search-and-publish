@@ -38,6 +38,7 @@ query GetMyPublication {
         node {
           id
           displayTitle
+          favicon
         }
       }
     }
@@ -71,16 +72,50 @@ query GetProfileData {
   me {
     id
     username
+    profilePicture
+    tagsFollowing {
+      id
+      tagline
+      info {
+        text
+      }
+      logo
+    }
+    publications(first: 10) {
+      edges {
+        node {
+          id
+          about {
+            text
+          }
+          url
+          drafts(first: 10) {
+            edges {
+              node {
+                title
+              }
+            }
+          }
+        }
+      }
+    }
     bio {
       text
     }
     followersCount
+
     posts(page: 1, pageSize: 10) {
       nodes {
+        id
         coverImage {
           url
         }
         title
+        subtitle
+        slug
+        series {
+          name
+        }
         publishedAt
         url
       }
