@@ -90,7 +90,7 @@ function BlogsList({ id }: publication) {
                   <List.Item.Detail.Metadata.Link text={"Go to Blog"} title={b?.node?.slug} target={b?.node?.slug} />
                   <List.Item.Detail.Metadata.Separator />
                   <List.Item.Detail.Metadata.TagList title="Tags">
-                    {b?.node?.tags?.map((t) => <List.Item.Detail.Metadata.TagList.Item text={t?.name} />)}
+                    {b?.node?.tags?.map((t) => <List.Item.Detail.Metadata.TagList.Item key={t?.name} text={t?.name} />)}
                   </List.Item.Detail.Metadata.TagList>
                 </List.Item.Detail.Metadata>
               }
