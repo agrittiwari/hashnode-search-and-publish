@@ -5,7 +5,6 @@
   "description": "This hashnode raycast extension is a personal hashnode feed and publishing blogs right from raycast ",
   "icon": "command-icon.png",
   "author": "agrit",
-  "owner": "agrittiwari",
   "categories": [
     "Developer Tools"
   ],
